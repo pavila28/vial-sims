@@ -3,6 +3,7 @@ import Home from '../Home/Home'
 import MyAccount from '../MyAccount/MyAccount'
 import NotFound from '../NotFound/NotFound'
 import SignIn from '../SignIn/SignIn'
+import Navbar from '../../Components/Navbar/Navbar'
 import './App.css'
 
 const AppRoutes = () => {
@@ -20,6 +21,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <AppRoutes />
+      <Navbar />
     </BrowserRouter>
   )
 }

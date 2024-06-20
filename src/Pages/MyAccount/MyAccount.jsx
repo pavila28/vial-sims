@@ -1,10 +1,10 @@
-import React from 'react'
+import Layout from '../../Components/Layout/Layout'
 
 const MyAccount = () => {
   return (
-    <div className='bg-red-100'>
+    <Layout>
         MyAccount
-    </div>
+    </Layout>
   )
 }
 

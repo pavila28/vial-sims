@@ -1,4 +1,5 @@
 import DataTable from 'react-data-table-component'
+import { useState } from 'react'
 
 const SimsTable = () => {
     const columns = [
@@ -85,11 +86,27 @@ const SimsTable = () => {
         },
     ]
 
+    const [records, setRecords] = useState(data)
+
+    // Status filter
+    const handleChange = (e) => {
+        const filteredRecords = data.filter(record => {
+            return record.sim_status.toLowerCase().includes(e.target.value.toLowerCase())
+        })
+
+        setRecords(filteredRecords)
+    }
+
   return (
-    <div>
-        <DataTable 
+    <div className='flex flex-col items-center mt-3'>
+        <input
+            type='text'
+            onChange={handleChange}
+        />
+
+        <DataTable
             columns={columns}
-            data={data}
+            data={records}
             selectableRows
             pagination
             // paginationPerPage={5}

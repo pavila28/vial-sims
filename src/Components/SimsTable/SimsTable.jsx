@@ -1,4 +1,5 @@
 import DataTable from 'react-data-table-component'
+import apiInstanceOxio from '../../Backend/InstanciasOxio/InstanceOxio'
 import { useState } from 'react'
 
 const SimsTable = () => {

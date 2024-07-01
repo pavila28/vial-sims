@@ -1,8 +1,27 @@
 import DataTable from 'react-data-table-component'
 import apiInstanceOxio from '../../Backend/InstanciasOxio/InstanceOxio'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const SimsTable = () => {
+    const [simLine, setSimLine] = useState(null)
+    const [apiError, setApiError] = useState(null)
+
+    useEffect(() => {
+        async function getLine() {
+            try {
+                const response = await apiInstanceOxio.get('lines/28f133f0-3f41-4bdd-b143-8eb88bb6f27a')
+                const data = response.data
+                setSimLine(data)
+                console.log('Data: ', simLine)
+            } catch (error) {
+                setError(setApiError)
+                console.log('Error: ', apiError)
+            }
+        }
+
+        getLine()
+    }, [])
+
     const columns = [
         {
             name: 'Iccid',
@@ -111,7 +130,7 @@ const SimsTable = () => {
             selectableRows
             pagination
             // paginationPerPage={5}
-            onSelectedRowsChange={data => console.log(data)}
+            // onSelectedRowsChange={data => console.log(data)}
             fixedHeader
         />
     </div>

@@ -5,7 +5,8 @@ const oxioApiKey = 'vialte_OK5J5nFwuwC2F9n26zdqLBRj'
 const oxioApiSecret = '1u1B/nZjDlS0tHrP6wF37fReyrcWmLMf'
 
 // Base64 Codification
-const oxioEncodedCredentials = Buffer.from(`${oxioApiKey}:${oxioApiSecret}`).toString('base64')
+// const oxioEncodedCredentials = Buffer.from(`${oxioApiKey}:${oxioApiSecret}`).toString('base64')
+const oxioEncodedCredentials = btoa(`${oxioApiKey}:${oxioApiSecret}`)
 
 // Axios config
 const apiInstanceOxio = axios.create({

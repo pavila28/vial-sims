@@ -12,10 +12,10 @@ const SimsTable = () => {
                 const response = await apiInstanceOxio.get('lines/28f133f0-3f41-4bdd-b143-8eb88bb6f27a')
                 const data = response.data
                 setSimLine(data)
-                console.log('Data: ', simLine)
+                console.log('Data: ', data)
             } catch (error) {
-                setError(setApiError)
-                console.log('Error: ', apiError)
+                setError(error)
+                console.log('Error: ', error)
             }
         }
 
@@ -43,85 +43,36 @@ const SimsTable = () => {
         },
     ]
 
-    const data = [
+    const dataTable = simLine ? [
         {
-            sim_iccid: '1234567885123456789',
-            sim_status: 'Active',
-            sim_line: 'Line 1',
-            sim_pool: 'Pool 1'
-        },
-        {
-            sim_iccid: '1234567890363456789',
-            sim_status: 'Cold',
-            sim_line: 'Line 2',
-            sim_pool: 'Pool 1'
-        },
-        {
-            sim_iccid: '1234564890123456789',
-            sim_status: 'Active',
-            sim_line: 'Line 3',
-            sim_pool: 'Pool 2'
-        },
-        {
-            sim_iccid: '1234567890723556789',
-            sim_status: 'Warm',
-            sim_line: 'Line 4',
-            sim_pool: 'Pool 2'
-        },
-        {
-            sim_iccid: '1234567890723556789',
-            sim_status: 'Warm',
-            sim_line: 'Line 4',
-            sim_pool: 'Pool 2'
-        },
-        {
-            sim_iccid: '1234567890723556789',
-            sim_status: 'Warm',
-            sim_line: 'Line 4',
-            sim_pool: 'Pool 2'
-        },
-        {
-            sim_iccid: '1234567890723556789',
-            sim_status: 'Warm',
-            sim_line: 'Line 4',
-            sim_pool: 'Pool 2'
-        },
-        {
-            sim_iccid: '1234567890723556789',
-            sim_status: 'Warm',
-            sim_line: 'Line 4',
-            sim_pool: 'Pool 2'
-        },
-        {
-            sim_iccid: '1234567890723556789',
-            sim_status: 'Warm',
-            sim_line: 'Line 4',
-            sim_pool: 'Pool 2'
-        },
-        {
-            sim_iccid: '1234567890723556789',
-            sim_status: 'Warm',
-            sim_line: 'Line 4',
-            sim_pool: 'Pool 2'
-        },
-    ]
+            sim_iccid: simLine.iccid,
+            sim_status: simLine.status,
+            sim_line: simLine.phoneNumber.currentPhoneNumber,
+            sim_pool: simLine.services.inService ? 'Active' : 'Inactive'
+        }
+    ] : []
 
-    const [records, setRecords] = useState(data)
+    const [records, setRecords] = useState(dataTable)
 
     // Status filter
     const handleChange = (e) => {
-        const filteredRecords = data.filter(record => {
+        const filteredRecords = dataTable.filter(record => {
             return record.sim_status.toLowerCase().includes(e.target.value.toLowerCase())
         })
 
         setRecords(filteredRecords)
     }
 
+    useEffect(() => {
+        setRecords(dataTable);
+    }, [simLine]);
+
   return (
     <div className='flex flex-col items-center mt-3'>
         <input
             type='text'
             onChange={handleChange}
+            className='bg-slate-400'
         />
 
         <DataTable
@@ -129,8 +80,6 @@ const SimsTable = () => {
             data={records}
             selectableRows
             pagination
-            // paginationPerPage={5}
-            // onSelectedRowsChange={data => console.log(data)}
             fixedHeader
         />
     </div>

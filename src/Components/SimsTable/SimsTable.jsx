@@ -3,23 +3,21 @@ import apiInstanceOxio from '../../Backend/InstanciasOxio/InstanceOxio'
 import { useEffect, useState } from 'react'
 
 const SimsTable = () => {
-    const [simLine, setSimLine] = useState(null)
-    const [apiError, setApiError] = useState(null)
+    const [simLines, setSimLines] = useState([])
 
     useEffect(() => {
-        async function getLine() {
+        async function getLines() {
             try {
-                const response = await apiInstanceOxio.get('lines/28f133f0-3f41-4bdd-b143-8eb88bb6f27a')
-                const data = response.data
-                setSimLine(data)
+                const response = await apiInstanceOxio.get('lines?iccids=8952040000780301327F&iccids=8952040000780301335F')
+                const data = response.data.lines
+                setSimLines(data)
                 console.log('Data: ', data)
             } catch (error) {
-                setError(error)
                 console.log('Error: ', error)
             }
         }
 
-        getLine()
+        getLines()
     }, [])
 
     const columns = [
@@ -43,14 +41,12 @@ const SimsTable = () => {
         },
     ]
 
-    const dataTable = simLine ? [
-        {
-            sim_iccid: simLine.iccid,
-            sim_status: simLine.status,
-            sim_line: simLine.phoneNumber.currentPhoneNumber,
-            sim_pool: simLine.services.inService ? 'Active' : 'Inactive'
-        }
-    ] : []
+    const dataTable = simLines.map(line => ({
+        sim_iccid: line.iccid,
+        sim_status: line.status,
+        sim_line: line.phoneNumber.currentPhoneNumber,
+        sim_pool: line.services.inService ? 'Active' : 'Inactive'
+    }))
 
     const [records, setRecords] = useState(dataTable)
 
@@ -65,14 +61,15 @@ const SimsTable = () => {
 
     useEffect(() => {
         setRecords(dataTable);
-    }, [simLine]);
+    }, [simLines]);
 
   return (
     <div className='flex flex-col items-center mt-3'>
         <input
             type='text'
             onChange={handleChange}
-            className='bg-slate-400'
+            // className='bg-slate-400'
+            placeholder='Search by status'
         />
 
         <DataTable

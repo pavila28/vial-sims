@@ -1,6 +1,12 @@
 import DataTable from 'react-data-table-component'
-import apiInstanceOxio from '../../Backend/InstanciasOxio/InstanceOxio'
 import { useEffect, useState } from 'react'
+import apiInstanceOxio, {oxioBaseURL} from '../../Backend/InstanciasOxio/InstanceOxio'
+import { stagingIccidList } from '../../Backend/iccidListOxio/iccidListOxio'
+
+const buildGetLinesURL = (oxioBaseURL, iccidList) => {
+    const linesAsQueryParams = iccidList.map(iccid => `iccids=${iccid}`).join('&')
+    return `${oxioBaseURL}lines?${linesAsQueryParams}`
+}
 
 const SimsTable = () => {
     const [simLines, setSimLines] = useState([])
@@ -8,7 +14,9 @@ const SimsTable = () => {
     useEffect(() => {
         async function getLines() {
             try {
-                const response = await apiInstanceOxio.get('lines?iccids=8952040000780301327F&iccids=8952040000780301335F')
+                const baseURL = oxioBaseURL
+                const url = buildGetLinesURL(baseURL, stagingIccidList)
+                const response = await apiInstanceOxio.get(url)
                 const data = response.data.lines
                 setSimLines(data)
                 console.log('Data: ', data)

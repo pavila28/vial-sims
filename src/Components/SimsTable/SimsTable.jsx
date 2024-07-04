@@ -26,13 +26,13 @@ const SimsTable = () => {
             selector: row => row.sim_iccid,
         },
         {
+            name: 'Line',
+            selector: row => row.sim_line,
+        },
+        {
             name: 'SIM Status',
             selector: row => row.sim_status,
             sortable: true
-        },
-        {
-            name: 'Line',
-            selector: row => row.sim_line,
         },
         {
             name: 'Pool',
@@ -41,10 +41,18 @@ const SimsTable = () => {
         },
     ]
 
+    const customTableStyles = {
+        rows: {
+            style: {
+                minWidth: '900px'
+            }
+        }
+    }
+
     const dataTable = simLines.map(line => ({
         sim_iccid: line.iccid,
-        sim_status: line.status,
         sim_line: line.phoneNumber.currentPhoneNumber,
+        sim_status: line.status,
         sim_pool: line.services.inService ? 'Active' : 'Inactive'
     }))
 
@@ -75,6 +83,7 @@ const SimsTable = () => {
         <DataTable
             columns={columns}
             data={records}
+            customStyles={customTableStyles}
             selectableRows
             pagination
             fixedHeader

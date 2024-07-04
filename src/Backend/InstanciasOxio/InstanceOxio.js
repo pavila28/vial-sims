@@ -8,9 +8,11 @@ const oxioApiSecret = '1u1B/nZjDlS0tHrP6wF37fReyrcWmLMf'
 // const oxioEncodedCredentials = Buffer.from(`${oxioApiKey}:${oxioApiSecret}`).toString('base64')
 const oxioEncodedCredentials = btoa(`${oxioApiKey}:${oxioApiSecret}`)
 
+export const oxioBaseURL = 'https://api-staging.brandvno.com/v2/'
+
 // Axios config
 const apiInstanceOxio = axios.create({
-    baseURL: 'https://api-staging.brandvno.com/v2/',
+    baseURL: oxioBaseURL,
     headers: {
         'Authorization': `Basic ${oxioEncodedCredentials}`,
         'Content-type': 'application/json'

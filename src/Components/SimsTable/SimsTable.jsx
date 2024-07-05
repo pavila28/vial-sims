@@ -11,21 +11,26 @@ const buildGetLinesURL = (oxioBaseURL, iccidList) => {
 const SimsTable = () => {
     const [simLines, setSimLines] = useState([])
 
-    useEffect(() => {
-        async function getLines() {
-            try {
-                const baseURL = oxioBaseURL
-                const url = buildGetLinesURL(baseURL, stagingIccidList)
-                const response = await apiInstanceOxio.get(url)
-                const data = response.data.lines
-                setSimLines(data)
-                console.log('Data: ', data)
-            } catch (error) {
-                console.log('Error: ', error)
-            }
+    const getLines = async () => {
+        try {
+            const baseURL = oxioBaseURL
+            const url = buildGetLinesURL(baseURL, stagingIccidList)
+            const response = await apiInstanceOxio.get(url)
+            const data = response.data.lines
+            setSimLines(data)
+            console.log('Data: ', data)
+        } catch (error) {
+            console.log('Error: ', error)
         }
-
+    }
+    
+    useEffect(() => {
         getLines()
+        const intervalId = setInterval(() => {
+            getLines()
+        }, 300000)
+
+        return () => clearInterval(intervalId)
     }, [])
 
     const columns = [

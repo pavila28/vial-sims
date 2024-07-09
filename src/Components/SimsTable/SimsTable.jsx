@@ -17,8 +17,27 @@ const SimsTable = () => {
             const url = buildGetLinesURL(baseURL, stagingIccidList)
             const response = await apiInstanceOxio.get(url)
             const data = response.data.lines
-            setSimLines(data)
-            console.log('Data: ', data)
+            console.log('Get line bulk: ', data)
+
+            // Get each SIM current plan
+            const getSimCurrentPlan = await Promise.all(data.map(async (sim) => {
+                const urlWithIccids = `sims/${sim.iccid}/user-plans`
+                const urlCompleteWithIccids = `${oxioBaseURL}${urlWithIccids}`
+                console.log('URL for each SIM: ', urlCompleteWithIccids)
+
+                try {
+                    const simPlanResponse = await apiInstanceOxio.get(urlWithIccids)
+                    const simPlanData = simPlanResponse.data.userPlans[0].planDisplayName
+                    console.log('Sim plan: ', simPlanData)
+                    return { ...sim, currentPlan: simPlanData }
+                } catch (error) {
+                    console.log(`Error fetching plan for SIM ${sim.iccid}:`, error)
+                    return { ...sim, currentPlan: 'N/A' }
+                }
+            }))
+
+            setSimLines(getSimCurrentPlan)
+            console.log('Data with plans: ', getSimCurrentPlan)
         } catch (error) {
             console.log('Error: ', error)
         }
@@ -52,12 +71,17 @@ const SimsTable = () => {
             selector: row => row.sim_pool,
             sortable: true
         },
+        {
+            name: 'Plan',
+            selector: row => row.sim_currentPlan,
+            sortable: true
+        }
     ]
 
     const customTableStyles = {
         rows: {
             style: {
-                minWidth: '900px'
+                minWidth: '1000px'
             }
         }
     }
@@ -66,7 +90,8 @@ const SimsTable = () => {
         sim_iccid: line.iccid,
         sim_line: line.phoneNumber.currentPhoneNumber,
         sim_status: line.status,
-        sim_pool: line.services.inService ? 'Active' : 'Inactive'
+        sim_pool: line.services.inService ? 'Active' : 'Inactive',
+        sim_currentPlan: line.currentPlan
     }))
 
     const [records, setRecords] = useState(dataTable)

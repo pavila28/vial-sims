@@ -2,7 +2,7 @@ import DataTable from 'react-data-table-component'
 import { useEffect, useState } from 'react'
 import { getLinesBulk } from '../../Backend/Endpoints/getLinesBulk'
 
-const SimsTable = () => {
+const MainTable = () => {
     const [simLines, setSimLines] = useState([])
     
     useEffect(() => {
@@ -101,4 +101,4 @@ const SimsTable = () => {
   )
 }
 
-export default SimsTable
+export default MainTable

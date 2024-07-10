@@ -1,11 +1,11 @@
 import Layout from '../../Components/Layout/Layout'
-import SimsTable from '../../Components/SimsTable/SimsTable'
+import MainTable from '../../Components/MainTable/MainTable'
 
 const Home = () => {
   return (
     <Layout>
         Home
-        <SimsTable />
+        <MainTable />
     </Layout>
   )
 }

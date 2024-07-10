@@ -1,52 +1,24 @@
 import DataTable from 'react-data-table-component'
 import { useEffect, useState } from 'react'
-import apiInstanceOxio, {oxioBaseURL} from '../../Backend/InstanciasOxio/InstanceOxio'
-import { stagingIccidList } from '../../Backend/iccidListOxio/iccidListOxio'
-
-const buildGetLinesURL = (oxioBaseURL, iccidList) => {
-    const linesAsQueryParams = iccidList.map(iccid => `iccids=${iccid}`).join('&')
-    return `${oxioBaseURL}lines?${linesAsQueryParams}`
-}
+import { getLinesBulk } from '../../Backend/Endpoints/getLinesBulk'
 
 const SimsTable = () => {
     const [simLines, setSimLines] = useState([])
-
-    const getLines = async () => {
-        try {
-            const baseURL = oxioBaseURL
-            const url = buildGetLinesURL(baseURL, stagingIccidList)
-            const response = await apiInstanceOxio.get(url)
-            const data = response.data.lines
-            console.log('Get line bulk: ', data)
-
-            // Get each SIM current plan
-            const getSimCurrentPlan = await Promise.all(data.map(async (sim) => {
-                const urlWithIccids = `sims/${sim.iccid}/user-plans`
-                const urlCompleteWithIccids = `${oxioBaseURL}${urlWithIccids}`
-                console.log('URL for each SIM: ', urlCompleteWithIccids)
-
-                try {
-                    const simPlanResponse = await apiInstanceOxio.get(urlWithIccids)
-                    const simPlanData = simPlanResponse.data.userPlans[0].planDisplayName
-                    console.log('Sim plan: ', simPlanData)
-                    return { ...sim, currentPlan: simPlanData }
-                } catch (error) {
-                    console.log(`Error fetching plan for SIM ${sim.iccid}:`, error)
-                    return { ...sim, currentPlan: 'N/A' }
-                }
-            }))
-
-            setSimLines(getSimCurrentPlan)
-            console.log('Data with plans: ', getSimCurrentPlan)
-        } catch (error) {
-            console.log('Error: ', error)
-        }
-    }
     
     useEffect(() => {
-        getLines()
+        const fetchSimsData = async () => {
+            try {
+                const data = await getLinesBulk()
+                setSimLines(data)
+                console.log('SIMs data: ', data)
+            } catch (error) {
+                console.log('Error fetching data: ', error)
+            }
+        }
+
+        fetchSimsData()
         const intervalId = setInterval(() => {
-            getLines()
+            fetchSimsData()
         }, 300000)
 
         return () => clearInterval(intervalId)
@@ -71,11 +43,11 @@ const SimsTable = () => {
             selector: row => row.sim_pool,
             sortable: true
         },
-        {
-            name: 'Plan',
-            selector: row => row.sim_currentPlan,
-            sortable: true
-        }
+        // {
+        //     name: 'Plan',
+        //     selector: row => row.sim_currentPlan,
+        //     sortable: true
+        // }
     ]
 
     const customTableStyles = {
@@ -91,7 +63,6 @@ const SimsTable = () => {
         sim_line: line.phoneNumber.currentPhoneNumber,
         sim_status: line.status,
         sim_pool: line.services.inService ? 'Active' : 'Inactive',
-        sim_currentPlan: line.currentPlan
     }))
 
     const [records, setRecords] = useState(dataTable)

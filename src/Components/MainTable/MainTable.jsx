@@ -1,4 +1,4 @@
-import DataTable from 'react-data-table-component'
+import DataTable, { createTheme } from 'react-data-table-component'
 import { useEffect, useState } from 'react'
 import { getLinesBulk } from '../../Backend/Endpoints/getLinesBulk'
 
@@ -26,10 +26,6 @@ const MainTable = () => {
 
     const columns = [
         {
-            name: 'Iccid',
-            selector: row => row.sim_iccid,
-        },
-        {
             name: 'Line',
             selector: row => row.sim_line,
         },
@@ -37,6 +33,10 @@ const MainTable = () => {
             name: 'SIM Status',
             selector: row => row.sim_status,
             sortable: true
+        },
+        {
+            name: 'Iccid',
+            selector: row => row.sim_iccid,
         },
         {
             name: 'Pool',
@@ -53,15 +53,24 @@ const MainTable = () => {
     const customTableStyles = {
         rows: {
             style: {
-                minWidth: '1000px'
+                minWidth: '1000px',
+                border: '1px solid black',
+            }
+        },
+        headCells: {
+            style: {
+                border: '1px solid black',
+                backgroundColor: '#f5f5f5', // Fondo ligero para celdas de encabezado
+                color: 'black', // Color del texto en celdas de encabezado
+                fontWeight: 'bold', // Texto en negrita
             }
         }
     }
 
     const dataTable = simLines.map(line => ({
-        sim_iccid: line.iccid,
         sim_line: line.phoneNumber.currentPhoneNumber,
         sim_status: line.status,
+        sim_iccid: line.iccid,
         sim_pool: line.services.inService ? 'Active' : 'Inactive',
     }))
 
@@ -85,8 +94,8 @@ const MainTable = () => {
         <input
             type='text'
             onChange={handleChange}
-            // className='bg-slate-400'
             placeholder='Search by status'
+            style={{ border: '1px solid black', backgroundColor: '#f5f5f5', padding: '5px', borderRadius: '4px', marginBottom: '5px', textAlign: 'center', height: '40px', lineHeight: '40px' }}
         />
 
         <DataTable

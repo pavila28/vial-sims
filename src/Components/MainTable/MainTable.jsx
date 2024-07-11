@@ -28,32 +28,59 @@ const MainTable = () => {
         {
             name: 'Line',
             selector: row => row.sim_line,
+            minWidth: '130px',
         },
         {
-            name: 'SIM Status',
+            name: 'Estado del SIM',
             selector: row => row.sim_status,
+            minWidth: '140px',
             sortable: true
         },
         {
-            name: 'Iccid',
+            name: 'ICCID',
             selector: row => row.sim_iccid,
+            minWidth: '200px',
+            sortable: true
+        },
+        {
+            name: 'Consumo',
+            selector: row => row.sim_dataUsed,
+        },
+        {
+            name: 'Sitio',
+            selector: row => row.sim_site,
+            minWidth: '200px',
+            sortable: true
+        },
+        {
+            name: 'Proyecto',
+            selector: row => row.sim_project,
+            minWidth: '200px',
+            sortable: true
         },
         {
             name: 'Pool',
             selector: row => row.sim_pool,
+            minWidth: '100px',
             sortable: true
         },
-        // {
-        //     name: 'Plan',
-        //     selector: row => row.sim_currentPlan,
-        //     sortable: true
-        // }
+        {
+            name: 'Red',
+            selector: row => row.sim_network,
+            sortable: true
+        },
+        {
+            name: 'Org Code',
+            selector: row => row.sim_orgCode,
+            minWidth: '110px',
+            sortable: true
+        },
     ]
 
     const customTableStyles = {
         rows: {
             style: {
-                minWidth: '1000px',
+                // minWidth: '1300px',
                 border: '1px solid black',
             }
         },
